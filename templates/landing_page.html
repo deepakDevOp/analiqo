@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Analiqo - Smart Repricing Solution for E-Commerce Sellers{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    {% block extra_css %}
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #4cc9f0;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-light: #f8f9fa;
+            --text-muted: #adb5bd;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            transform: rotate(30deg);
+        }
+        
+        /* Modern hero section with animated gradient */
+        .hero-section {
+            background: linear-gradient(-45deg, #4361ee, #3a0ca3, #4cc9f0, #560bad);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: white;
+            padding: 120px 0 80px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 30px 30px;
+        }
+        
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* Floating elements animation */
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        .floating-element:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-element:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            left: 20%;
+            animation-delay: 1s;
+        }
+        
+        .floating-element:nth-child(3) {
+            width: 50px;
+            height: 50px;
+            top: 30%;
+            right: 30%;
+            animation-delay: 2s;
+        }
+        
+        .floating-element:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            right: 15%;
+            animation-delay: 3s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+        
+        /* Modern cards with hover effects */
+        .feature-card {
+            border-radius: 16px;
+            background: var(--card-bg);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 15px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.2);
+        }
+        
+        /* Pricing cards with modern design */
+        .pricing-card {
+            border-radius: 20px;
+            background: var(--card-bg);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .pricing-card.featured {
+            border: 2px solid var(--accent-color);
+            position: relative;
+        }
+        
+        .pricing-card.featured::before {
+            content: "MOST POPULAR";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--accent-color);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 0 20px 0 15px;
+            z-index: 1;
+        }
+        
+        .pricing-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 18px 18px 0 0;
+            padding: 30px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pricing-featured {
+            background: linear-gradient(135deg, #36b9cc 0%, #1a8a98 100%);
+        }
+        
+        .btn-signup {
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-signup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: -1;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-signup:hover::before {
+            width: 100%;
+        }
+        
+        /* Testimonial cards with modern design */
+        .testimonial-card {
+            border-radius: 20px;
+            background: var(--card-bg);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 60px rgba(0, 0, 0, 0.2);
+        }
+        
+        .testimonial-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+            padding: 3px;
+        }
+        
+        /* Modern CTA section with animated gradient */
+        .cta-section {
+            background: linear-gradient(-45deg, #3a0ca3, #4361ee, #4cc9f0, #7209b7);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: white;
+            padding: 80px 0;
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Pulse animation for CTA button */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+        
+        .pulse-button {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Navbar styling */
+        .navbar {
+            background-color: rgba(18, 18, 18, 0.8) !important;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            padding: 10px 0;
+            background-color: rgba(18, 18, 18, 0.95) !important;
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-link {
+            position: relative;
+            margin: 0 10px;
+            color: var(--text-light) !important;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Modern footer styling */
+        footer {
+            background-color: #0c0c0c;
+            color: var(--text-light);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        footer a {
+            transition: all 0.3s ease;
+        }
+        
+        footer a:hover {
+            color: var(--accent-color) !important;
+            transform: translateX(5px);
+        }
+        
+        /* Typing animation for hero text */
+        .typing-text::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+        }
+        
+        @keyframes blink {
+            from, to { opacity: 1 }
+            50% { opacity: 0 }
+        }
+        
+        /* Count animation */
+        .count-animation {
+            display: inline-block;
+            font-weight: bold;
+            font-size: 3rem;
+            color: var(--accent-color);
+        }
+        
+        /* Number counting animation */
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stats-item {
+            animation: countUp 0.5s ease forwards;
+            opacity: 0;
+        }
+        
+        .stats-item:nth-child(1) { animation-delay: 0.1s; }
+        .stats-item:nth-child(2) { animation-delay: 0.3s; }
+        .stats-item:nth-child(3) { animation-delay: 0.5s; }
+        .stats-item:nth-child(4) { animation-delay: 0.7s; }
+    </style>
+    {% endblock %}
+</head>
+<body>
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle" id="theme-toggle">
+        <i class="fas fa-sun"></i>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:landing_page' %}">
+                Analiqo
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:landing_page' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:help_center' %}">Help Center</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'core:dashboard' %}" class="btn btn-outline-light me-2">Dashboard</a>
+                        <a href="{% url 'account_logout' %}" class="btn btn-danger">Logout</a>
+                    {% else %}
+                        <a href="{% url 'account_login' %}" class="btn btn-outline-light me-2">Login</a>
+                        <a href="{% url 'account_signup' %}" class="btn btn-primary">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}
+    <!-- Hero Section with Animated Elements -->
+    <section class="hero-section">
+        <!-- Floating Elements -->
+        <div class="floating-elements">
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+        </div>
+        
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
+                    <h1 class="display-4 fw-bold mb-4 typing-text" id="hero-text">Maximize Your Profits with Smart Repricing</h1>
+                    <p class="lead mb-4">Analiqo helps e-commerce sellers win more Buy Box, increase sales, and optimize profits with AI-powered repricing strategies.</p>
+                    <div class="mt-5">
+                        <a href="{% url 'account_signup' %}" class="btn btn-light btn-lg me-3 btn-signup pulse-button">Get Started Free</a>
+                        <a href="{% url 'account_login' %}" class="btn btn-outline-light btn-lg btn-signup">Sign In</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center" data-aos="fade-up" data-aos-duration="1200" data-aos-delay="300">
+                    <img src="{% static 'img/dashboard-preview.png' %}" alt="Dashboard Preview" class="img-fluid rounded-4 shadow-lg" style="max-width: 90%; transform: perspective(1000px) rotateY(-15deg) rotateX(5deg); transition: all 0.5s ease;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Counter Section -->
+    <section class="py-5 position-relative" style="margin-top: -30px; z-index: 10;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card border-0 shadow-lg rounded-4 bg-dark" style="border: 1px solid rgba(255, 255, 255, 0.05);">
+                        <div class="card-body p-4">
+                            <div class="row text-center py-3">
+                                <div class="col-md-3 col-6 stats-item">
+                                    <div id="counter1" class="count-animation">85%</div>
+                                    <p class="mb-0 text-muted">Buy Box Win Rate</p>
+                                </div>
+                                <div class="col-md-3 col-6 stats-item">
+                                    <div id="counter2" class="count-animation">500+</div>
+                                    <p class="mb-0 text-muted">Active Sellers</p>
+                                </div>
+                                <div class="col-md-3 col-6 stats-item">
+                                    <div id="counter3" class="count-animation">3M+</div>
+                                    <p class="mb-0 text-muted">Products Optimized</p>
+                                </div>
+                                <div class="col-md-3 col-6 stats-item">
+                                    <div id="counter4" class="count-animation">24%</div>
+                                    <p class="mb-0 text-muted">Avg. Profit Increase</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5 my-5">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="fw-bold">Why Choose Analiqo</h2>
+                <p class="lead text-muted">Powerful features to help you stay competitive and maximize profits</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card p-4 h-100">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>Intelligent Price Monitoring</h4>
+                        <p class="text-muted">Track competitors' prices across marketplaces and stay ahead of market changes.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card p-4 h-100">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h4>AI-Powered Repricing</h4>
+                        <p class="text-muted">Automatically adjust prices based on market conditions and your custom rules.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card p-4 h-100">
+                        <div class="feature-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h4>Win More Buy Box</h4>
+                        <p class="text-muted">Optimize your pricing strategy to increase your Buy Box win rate and boost sales.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-card p-4 h-100">
+                        <div class="feature-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h4>Customizable Rules</h4>
+                        <p class="text-muted">Create and manage pricing rules that align with your business goals and strategy.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-card p-4 h-100">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <h4>Detailed Analytics</h4>
+                        <p class="text-muted">Get insights into your pricing performance with comprehensive reports and dashboards.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-card p-4 h-100">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h4>Real-time Updates</h4>
+                        <p class="text-muted">React quickly to market changes with real-time price monitoring and instant repricing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-5 my-5">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="fw-bold">How Analiqo Works</h2>
+                <p class="lead text-muted">Simple process, powerful results</p>
+            </div>
+            
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2" data-aos="fade-left">
+                    <img src="{% static 'img/how-it-works.png' %}" alt="How It Works" class="img-fluid rounded-4 shadow-lg">
+                </div>
+                <div class="col-lg-6 order-lg-1" data-aos="fade-right">
+                    <div class="d-flex mb-4">
+                        <div class="me-4">
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <h4 class="mb-0 text-white">1</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>Connect Your Store</h4>
+                            <p class="text-muted">Integrate with your marketplace accounts in minutes with our secure API connections.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-4">
+                        <div class="me-4">
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <h4 class="mb-0 text-white">2</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>Set Your Rules</h4>
+                            <p class="text-muted">Define your pricing strategies with our intuitive rule builder or use our AI-recommended settings.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-4">
+                        <div class="me-4">
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <h4 class="mb-0 text-white">3</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>Monitor & Optimize</h4>
+                            <p class="text-muted">Our system continuously monitors the market and adjusts your prices to maximize profits.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="py-5 my-5">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="fw-bold">Simple, Transparent Pricing</h2>
+                <p class="lead text-muted">Choose the plan that works best for your business</p>
+            </div>
+            
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="pricing-card h-100">
+                        <div class="pricing-header">
+                            <h4 class="fw-bold mb-0">Starter</h4>
+                        </div>
+                        <div class="p-4">
+                            <div class="text-center">
+                                <h2 class="display-4 fw-bold">$29</h2>
+                                <p class="text-muted mb-4">per month</p>
+                            </div>
+                            
+                            <ul class="list-unstyled">
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Up to 100 products</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Standard repricing rules</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Daily price updates</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Basic analytics</li>
+                                <li class="mb-3 text-muted"><i class="fas fa-times text-danger me-2"></i> AI-powered suggestions</li>
+                                <li class="mb-3 text-muted"><i class="fas fa-times text-danger me-2"></i> Priority support</li>
+                            </ul>
+                            
+                            <div class="text-center mt-4">
+                                <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg w-100 btn-signup">Get Started</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="pricing-card h-100 featured">
+                        <div class="pricing-header pricing-featured">
+                            <h4 class="fw-bold mb-0">Professional</h4>
+                        </div>
+                        <div class="p-4">
+                            <div class="text-center">
+                                <h2 class="display-4 fw-bold">$79</h2>
+                                <p class="text-muted mb-4">per month</p>
+                            </div>
+                            
+                            <ul class="list-unstyled">
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Up to 500 products</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Advanced repricing rules</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Hourly price updates</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Advanced analytics</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> AI-powered suggestions</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Priority support</li>
+                            </ul>
+                            
+                            <div class="text-center mt-4">
+                                <a href="{% url 'account_signup' %}" class="btn btn-info btn-lg w-100 btn-signup">Get Started</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="pricing-card h-100">
+                        <div class="pricing-header">
+                            <h4 class="fw-bold mb-0">Enterprise</h4>
+                        </div>
+                        <div class="p-4">
+                            <div class="text-center">
+                                <h2 class="display-4 fw-bold">$199</h2>
+                                <p class="text-muted mb-4">per month</p>
+                            </div>
+                            
+                            <ul class="list-unstyled">
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Unlimited products</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Custom repricing strategies</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Real-time price updates</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Premium analytics</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> Advanced AI recommendations</li>
+                                <li class="mb-3"><i class="fas fa-check text-success me-2"></i> 24/7 dedicated support</li>
+                            </ul>
+                            
+                            <div class="text-center mt-4">
+                                <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg w-100 btn-signup">Get Started</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-5 my-5">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="fw-bold">What Our Customers Say</h2>
+                <p class="lead text-muted">Trusted by e-commerce sellers worldwide</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="testimonial-card p-4 h-100">
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="{% static 'img/testimonial1.jpg' %}" alt="Testimonial" class="testimonial-img me-3">
+                            <div>
+                                <h5 class="mb-0">Sarah Johnson</h5>
+                                <p class="text-muted mb-0">Amazon Seller</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"Since using Analiqo, my Buy Box win rate has increased by 45%. The automated repricing has saved me countless hours of work while boosting my sales significantly."</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="testimonial-card p-4 h-100">
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="{% static 'img/testimonial2.jpg' %}" alt="Testimonial" class="testimonial-img me-3">
+                            <div>
+                                <h5 class="mb-0">Michael Chen</h5>
+                                <p class="text-muted mb-0">Multi-channel Seller</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"The analytical insights provided by Analiqo have been a game-changer for my business. I can now make data-driven pricing decisions that have increased my profit margins by 23%."</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="testimonial-card p-4 h-100">
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="{% static 'img/testimonial3.jpg' %}" alt="Testimonial" class="testimonial-img me-3">
+                            <div>
+                                <h5 class="mb-0">Emily Rodriguez</h5>
+                                <p class="text-muted mb-0">eBay Power Seller</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"I was skeptical at first, but Analiqo has proven its worth many times over. The customizable rules allow me to implement my pricing strategy exactly how I want it."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="my-5">
+        <div class="container">
+            <div class="cta-section text-center" data-aos="fade-up">
+                <div class="floating-elements">
+                    <div class="floating-element"></div>
+                    <div class="floating-element"></div>
+                </div>
+                <h2 class="fw-bold mb-4">Ready to Boost Your E-commerce Performance?</h2>
+                <p class="lead mb-4">Join thousands of successful sellers who've increased their sales and profits with Analiqo</p>
+                <a href="{% url 'account_signup' %}" class="btn btn-light btn-lg btn-signup pulse-button">Get Started Today</a>
+            </div>
+        </div>
+    </section>
+    {% endblock %}
+
+    <!-- Footer -->
+    <footer class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold mb-4">Analiqo</h5>
+                    <p class="text-muted">Smart repricing solutions for e-commerce sellers, helping you maximize profits and win more Buy Box.</p>
+                    <div class="d-flex mt-3">
+                        <a href="#" class="text-muted me-3 fs-5"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-muted me-3 fs-5"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-muted me-3 fs-5"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-muted fs-5"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-4">Company</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'core:about' %}" class="text-muted text-decoration-none">About Us</a></li>
+                        <li class="mb-2"><a href="{% url 'core:contact' %}" class="text-muted text-decoration-none">Contact</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Careers</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-4">Resources</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'core:help_center' %}" class="text-muted text-decoration-none">Help Center</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">API Documentation</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Marketplace Guide</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Support</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-4">Legal</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'core:privacy_policy' %}" class="text-muted text-decoration-none">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="{% url 'core:terms_of_service' %}" class="text-muted text-decoration-none">Terms of Service</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Cookie Policy</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">GDPR</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-4">Features</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Price Monitoring</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Auto Repricing</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Analytics</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Integrations</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4" style="background-color: rgba(255, 255, 255, 0.1);">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 text-muted">&copy; {% now "Y" %} Analiqo. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 text-muted">Made with <i class="fas fa-heart text-danger"></i> for e-commerce sellers</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        // Initialize AOS animation library
+        AOS.init({
+            once: true
+        });
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+        
+        themeToggle.addEventListener('click', function() {
+            if (htmlElement.getAttribute('data-bs-theme') === 'dark') {
+                htmlElement.setAttribute('data-bs-theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                htmlElement.setAttribute('data-bs-theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        });
+        
+        // Dashboard image hover effect
+        const dashboardImage = document.querySelector('.hero-section img');
+        if (dashboardImage) {
+            dashboardImage.addEventListener('mousemove', function(e) {
+                const rect = dashboardImage.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                
+                dashboardImage.style.transform = `perspective(1000px) rotateY(${-x * 10}deg) rotateX(${y * 10}deg)`;
+            });
+            
+            dashboardImage.addEventListener('mouseleave', function() {
+                dashboardImage.style.transform = 'perspective(1000px) rotateY(-15deg) rotateX(5deg)';
+            });
+        }
+        
+        // Typing effect for hero text
+        function typeWriter(text, i, elementId, callback) {
+            if (i < text.length) {
+                document.getElementById(elementId).innerHTML = text.substring(0, i + 1) + '<span class="typing-cursor">|</span>';
+                
+                setTimeout(function() {
+                    typeWriter(text, i + 1, elementId, callback);
+                }, 50);
+            } else if (typeof callback === 'function') {
+                setTimeout(callback, 1000);
+            }
+        }
+        
+        const heroText = document.getElementById('hero-text');
+        if (heroText) {
+            const text = heroText.textContent;
+            heroText.innerHTML = '';
+            setTimeout(function() {
+                typeWriter(text, 0, 'hero-text');
+            }, 1000);
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

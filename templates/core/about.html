@@ -1,0 +1,535 @@
+{% extends 'landing_page.html' %}
+{% load static %}
+
+{% block title %}About Us | Analiqo{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+    .timeline {
+        position: relative;
+        padding: 0;
+        list-style: none;
+    }
+    
+    .timeline:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 2px;
+        margin-left: -1px;
+        background: linear-gradient(180deg, var(--primary-color), var(--accent-color));
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 50px;
+    }
+    
+    .timeline-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .timeline-img {
+        width: 80px;
+        height: 80px;
+        position: absolute;
+        left: 50%;
+        margin-left: -40px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        border: 5px solid var(--card-bg);
+        z-index: 10;
+    }
+    
+    .timeline-content {
+        position: relative;
+        width: 45%;
+        padding: 20px 30px;
+        border-radius: 16px;
+        background: var(--card-bg);
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .timeline-content:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .timeline-item:nth-child(even) .timeline-content {
+        float: right;
+    }
+    
+    .timeline-item:nth-child(odd) .timeline-content {
+        float: left;
+    }
+    
+    .timeline-content:after {
+        content: '';
+        position: absolute;
+        top: 30px;
+        right: -15px;
+        width: 30px;
+        height: 30px;
+        transform: rotate(45deg);
+        background: var(--card-bg);
+        box-shadow: 1px -1px 1px rgba(0, 0, 0, 0.1);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .timeline-item:nth-child(even) .timeline-content:after {
+        right: auto;
+        left: -15px;
+        box-shadow: -1px 1px 1px rgba(0, 0, 0, 0.1);
+        border-right: none;
+        border-top: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        border-left: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .timeline-date {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .team-card {
+        border-radius: 20px;
+        background: var(--card-bg);
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        height: 100%;
+    }
+    
+    .team-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .team-img-container {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .team-img {
+        transition: all 0.5s ease;
+        transform: scale(1);
+    }
+    
+    .team-card:hover .team-img {
+        transform: scale(1.1);
+    }
+    
+    .team-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(0deg, rgba(67, 97, 238, 0.8), transparent);
+        opacity: 0;
+        transition: all 0.5s ease;
+    }
+    
+    .team-card:hover .team-overlay {
+        opacity: 1;
+    }
+    
+    .team-content {
+        padding: 25px;
+        position: relative;
+    }
+    
+    .team-social {
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        padding: 15px;
+        transform: translateY(100%);
+        opacity: 0;
+        transition: all 0.5s ease;
+    }
+    
+    .team-card:hover .team-social {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    
+    .social-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(5px);
+        color: white;
+        margin: 0 5px;
+        transition: all 0.3s ease;
+    }
+    
+    .social-icon:hover {
+        background: white;
+        color: var(--primary-color);
+        transform: translateY(-5px);
+    }
+    
+    .value-card {
+        border-radius: 20px;
+        background: var(--card-bg);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        height: 100%;
+        position: relative;
+    }
+    
+    .value-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .value-icon {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        color: white;
+        font-size: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .value-icon:before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: inherit;
+        z-index: -1;
+        filter: blur(10px);
+        opacity: 0.5;
+        transform: scale(1.2);
+        transition: all 0.5s ease;
+    }
+    
+    .value-card:hover .value-icon:before {
+        transform: scale(1.6);
+        opacity: 0.7;
+    }
+    
+    .about-header {
+        position: relative;
+        padding: 100px 0 50px;
+        overflow: hidden;
+        border-radius: 0 0 30px 30px;
+        background: linear-gradient(-45deg, #3a0ca3, #4361ee, #4cc9f0, #7209b7);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        margin-bottom: 80px;
+    }
+    
+    .about-header .floating-elements {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+    }
+    
+    .about-header .floating-element {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: float 8s infinite ease-in-out;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- About Header Section -->
+<section class="about-header">
+    <!-- Floating Elements -->
+    <div class="floating-elements">
+        <div class="floating-element" style="width: 100px; height: 100px; top: 20%; left: 10%;"></div>
+        <div class="floating-element" style="width: 150px; height: 150px; top: 50%; right: 15%; animation-delay: 2s;"></div>
+        <div class="floating-element" style="width: 70px; height: 70px; bottom: 30%; left: 30%; animation-delay: 1s;"></div>
+    </div>
+    
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center" data-aos="fade-up">
+                <h1 class="display-4 fw-bold mb-4">About Analiqo</h1>
+                <p class="lead mb-0">We're on a mission to help e-commerce sellers maximize their profits through intelligent repricing.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Our Story Section -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-lg-6" data-aos="fade-right">
+            <h2 class="fw-bold mb-4">Our Story</h2>
+            <p>Analiqo was founded in 2022 by a team of e-commerce experts and data scientists who recognized a critical problem facing online sellers: manual price management was time-consuming and ineffective in the fast-paced world of online marketplaces.</p>
+            <p>After speaking with hundreds of sellers, we discovered that many were either losing sales due to overpricing or sacrificing profits with unsustainable price cuts. We knew there had to be a better way.</p>
+            <p>Our team developed a powerful, AI-driven repricing solution that helps sellers find the perfect balance - optimizing prices to win more Buy Box positions while maintaining healthy profit margins.</p>
+        </div>
+        <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+            <div class="position-relative">
+                <img src="{% static 'img/about-team.jpg' %}" alt="Our Team" class="img-fluid rounded-4 shadow-lg" style="transform: perspective(1000px) rotateY(10deg) rotateX(5deg); transition: all 0.5s ease;">
+                <div class="position-absolute" style="top: -20px; left: -20px; width: 100px; height: 100px; border-radius: 20px; background: var(--primary-color); opacity: 0.1; z-index: -1;"></div>
+                <div class="position-absolute" style="bottom: -20px; right: -20px; width: 150px; height: 150px; border-radius: 20px; background: var(--accent-color); opacity: 0.1; z-index: -1;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Timeline Section -->
+    <div class="row my-5">
+        <div class="col-12 text-center mb-5" data-aos="fade-up">
+            <h2 class="fw-bold">Our Journey</h2>
+            <p class="lead text-muted">The evolution of Analiqo over the years</p>
+        </div>
+        
+        <div class="col-12" data-aos="fade-up">
+            <ul class="timeline">
+                <li class="timeline-item clearfix">
+                    <div class="timeline-img">
+                        <img src="{% static 'img/timeline-1.jpg' %}" alt="2022" class="img-fluid">
+                    </div>
+                    <div class="timeline-content" data-aos="fade-right">
+                        <span class="timeline-date">2022</span>
+                        <h4>The Beginning</h4>
+                        <p class="text-muted">Analiqo was founded by a team of e-commerce experts and data scientists to solve the pricing challenges of online sellers.</p>
+                    </div>
+                </li>
+                
+                <li class="timeline-item clearfix">
+                    <div class="timeline-img">
+                        <img src="{% static 'img/timeline-2.jpg' %}" alt="2023" class="img-fluid">
+                    </div>
+                    <div class="timeline-content" data-aos="fade-left">
+                        <span class="timeline-date">2023</span>
+                        <h4>Market Expansion</h4>
+                        <p class="text-muted">We expanded our services to support additional marketplaces and launched advanced AI features for smarter repricing.</p>
+                    </div>
+                </li>
+                
+                <li class="timeline-item clearfix">
+                    <div class="timeline-img">
+                        <img src="{% static 'img/timeline-3.jpg' %}" alt="2024" class="img-fluid">
+                    </div>
+                    <div class="timeline-content" data-aos="fade-right">
+                        <span class="timeline-date">2024</span>
+                        <h4>Series A Funding</h4>
+                        <p class="text-muted">Secured $5M in Series A funding to accelerate growth and innovation in our repricing technology.</p>
+                    </div>
+                </li>
+                
+                <li class="timeline-item clearfix">
+                    <div class="timeline-img">
+                        <img src="{% static 'img/timeline-4.jpg' %}" alt="2025" class="img-fluid">
+                    </div>
+                    <div class="timeline-content" data-aos="fade-left">
+                        <span class="timeline-date">2025</span>
+                        <h4>Global Reach</h4>
+                        <p class="text-muted">Now serving thousands of sellers worldwide with continuous improvements to our platform and expanding our team.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Stats Section -->
+    <div class="row py-5 my-5">
+        <div class="col-lg-10 mx-auto">
+            <div class="card border-0 shadow-lg rounded-4" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border: 1px solid rgba(255, 255, 255, 0.1);">
+                <div class="card-body p-4">
+                    <div class="row text-center py-3">
+                        <div class="col-md-3 col-6 stats-item" data-aos="fade-up" data-aos-delay="100">
+                            <div class="count-animation fs-1 fw-bold text-white">500+</div>
+                            <p class="mb-0 text-white opacity-75">Active Clients</p>
+                        </div>
+                        <div class="col-md-3 col-6 stats-item" data-aos="fade-up" data-aos-delay="200">
+                            <div class="count-animation fs-1 fw-bold text-white">3M+</div>
+                            <p class="mb-0 text-white opacity-75">Products Optimized</p>
+                        </div>
+                        <div class="col-md-3 col-6 stats-item" data-aos="fade-up" data-aos-delay="300">
+                            <div class="count-animation fs-1 fw-bold text-white">4</div>
+                            <p class="mb-0 text-white opacity-75">Supported Marketplaces</p>
+                        </div>
+                        <div class="col-md-3 col-6 stats-item" data-aos="fade-up" data-aos-delay="400">
+                            <div class="count-animation fs-1 fw-bold text-white">24%</div>
+                            <p class="mb-0 text-white opacity-75">Avg. Profit Increase</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Our Values Section -->
+    <div class="row my-5">
+        <div class="col-12 text-center mb-5" data-aos="fade-up">
+            <h2 class="fw-bold">Our Values</h2>
+            <p class="lead text-muted">Principles that guide everything we do</p>
+        </div>
+        
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="value-card p-4 text-center h-100">
+                <div class="value-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h4 class="mt-4">Customer Success</h4>
+                <p class="text-muted">We measure our success by the success of our customers. If you're not winning, we're not winning.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="value-card p-4 text-center h-100">
+                <div class="value-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h4 class="mt-4">Innovation</h4>
+                <p class="text-muted">We're continuously improving our algorithms and features to stay ahead of the ever-changing e-commerce landscape.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="value-card p-4 text-center h-100">
+                <div class="value-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4 class="mt-4">Trust & Transparency</h4>
+                <p class="text-muted">We believe in building long-term relationships based on honest communication and reliable service.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Team Section -->
+    <div class="row my-5">
+        <div class="col-12 text-center mb-5" data-aos="fade-up">
+            <h2 class="fw-bold">Meet Our Leadership Team</h2>
+            <p class="lead text-muted">The experts behind Analiqo</p>
+        </div>
+        
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="team-card">
+                <div class="team-img-container">
+                    <img src="{% static 'img/team-member1.jpg' %}" class="team-img img-fluid" alt="CEO">
+                    <div class="team-overlay"></div>
+                    <div class="team-social">
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="team-content text-center">
+                    <h4>John Anderson</h4>
+                    <p class="text-primary fw-bold mb-2">CEO & Co-Founder</p>
+                    <p class="text-muted">Former Amazon seller with 10+ years of e-commerce experience and a background in data science.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="team-card">
+                <div class="team-img-container">
+                    <img src="{% static 'img/team-member2.jpg' %}" class="team-img img-fluid" alt="CTO">
+                    <div class="team-overlay"></div>
+                    <div class="team-social">
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="team-content text-center">
+                    <h4>Sarah Chen</h4>
+                    <p class="text-primary fw-bold mb-2">CTO & Co-Founder</p>
+                    <p class="text-muted">AI specialist with expertise in machine learning algorithms and cloud infrastructure.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="team-card">
+                <div class="team-img-container">
+                    <img src="{% static 'img/team-member3.jpg' %}" class="team-img img-fluid" alt="CPO">
+                    <div class="team-overlay"></div>
+                    <div class="team-social">
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="team-content text-center">
+                    <h4>Michael Rodriguez</h4>
+                    <p class="text-primary fw-bold mb-2">Head of Product</p>
+                    <p class="text-muted">UX expert and former e-commerce consultant passionate about creating intuitive user experiences.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<section class="py-5 my-5">
+    <div class="container">
+        <div class="cta-section text-center" data-aos="fade-up">
+            <div class="floating-elements">
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+            </div>
+            <h2 class="fw-bold mb-4">Ready to join the Analiqo family?</h2>
+            <p class="lead mb-4">Start optimizing your prices today and see the difference intelligent repricing can make for your business.</p>
+            <a href="{% url 'account_signup' %}" class="btn btn-light btn-lg px-5 py-3 btn-signup pulse-button">Get Started Free</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    // Image hover effect
+    const aboutImage = document.querySelector('.col-lg-6 .position-relative img');
+    if (aboutImage) {
+        aboutImage.addEventListener('mousemove', function(e) {
+            const rect = aboutImage.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            
+            aboutImage.style.transform = `perspective(1000px) rotateY(${x * 15}deg) rotateX(${-y * 15}deg)`;
+        });
+        
+        aboutImage.addEventListener('mouseleave', function() {
+            aboutImage.style.transform = 'perspective(1000px) rotateY(10deg) rotateX(5deg)';
+        });
+    }
+</script>
+{% endblock %}

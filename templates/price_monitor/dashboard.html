@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Price Monitor | Analiqo{% endblock %}
+
+{% block content %}
+<div class="py-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-indigo-700">Price Monitor</h1>
+        <div class="flex space-x-4">
+            <a href="{% url 'price_monitor:url_add' %}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Add URL
+            </a>
+            <a href="{% url 'price_monitor:bulk_import' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                </svg>
+                Bulk Import
+            </a>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6 border border-indigo-100 hover:border-indigo-300 transition">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500">Total Monitored URLs</h3>
+                    <div class="mt-1">
+                        <p class="text-2xl font-semibold text-indigo-600">{{ total_monitored }}</p>
+                    </div>
+                </div>
+                <div class="p-2 bg-indigo-50 rounded-md">
+                    <svg class="h-6 w-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6 border border-indigo-100 hover:border-indigo-300 transition">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500">Active Monitoring</h3>
+                    <div class="mt-1">
+                        <p class="text-2xl font-semibold text-indigo-600">{{ active_monitored }}</p>
+                    </div>
+                </div>
+                <div class="p-2 bg-green-50 rounded-md">
+                    <svg class="h-6 w-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6 border border-indigo-100 hover:border-indigo-300 transition">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500">Price Alerts</h3>
+                    <div class="mt-1">
+                        <p class="text-2xl font-semibold text-indigo-600">{{ price_alerts|length }}</p>
+                    </div>
+                </div>
+                <div class="p-2 bg-yellow-50 rounded-md">
+                    <svg class="h-6 w-6 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- Price Change Line Chart -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Price Changes (Last 15 Days)</h3>
+            <div class="h-64">
+                <canvas id="priceChangeChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Marketplace Distribution Chart -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Marketplace Distribution</h3>
+            <div class="h-64">
+                <canvas id="marketplaceDistributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent & Alerts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Recent Monitored Products -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Recently Added Products</h3>
+            </div>
+            <div class="px-6 py-2">
+                {% if recent_monitored %}
+                    <ul class="divide-y divide-gray-200">
+                        {% for url in recent_monitored %}
+                            <li class="py-3">
+                                <div class="flex items-center">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-indigo-600 truncate">
+                                            <a href="{% url 'price_monitor:url_detail' url.id %}" class="hover:underline">{{ url.name }}</a>
+                                        </p>
+                                        <p class="text-sm text-gray-500 truncate">
+                                            {{ url.marketplace|title }} • {{ url.monitoring_frequency|title }} monitoring
+                                        </p>
+                                    </div>
+                                    <div class="flex-shrink-0">
+                                        <span class="px-2 py-1 text-xs font-medium rounded-full {% if url.is_active %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                                            {% if url.is_active %}Active{% else %}Inactive{% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-gray-500 text-center py-4">No monitored URLs yet.</p>
+                {% endif %}
+            </div>
+            <div class="bg-gray-50 px-6 py-3 border-t border-gray-200">
+                <a href="{% url 'price_monitor:url_list' %}" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">View all monitored URLs →</a>
+            </div>
+        </div>
+        
+        <!-- Price Alerts -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Recent Price Alerts</h3>
+            </div>
+            <div class="px-6 py-2">
+                {% if price_alerts %}
+                    <ul class="divide-y divide-gray-200">
+                        {% for alert in price_alerts %}
+                            <li class="py-3">
+                                <div class="flex items-center">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900 truncate">
+                                            {{ alert.url.name }}
+                                        </p>
+                                        <p class="text-sm {% if alert.is_increase %}text-red-600{% else %}text-green-600{% endif %} font-medium">
+                                            {% if alert.is_increase %}
+                                                Price increased by {{ alert.change_percent|floatformat:1 }}%
+                                            {% else %}
+                                                Price decreased by {{ alert.change_percent|floatformat:1 }}%
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="flex-shrink-0">
+                                        <a href="{% url 'price_monitor:url_detail' alert.url.id %}" class="text-indigo-600 hover:text-indigo-800">
+                                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-gray-500 text-center py-4">No recent price alerts.</p>
+                {% endif %}
+            </div>
+            <div class="bg-gray-50 px-6 py-3 border-t border-gray-200">
+                <a href="{% url 'price_monitor:analytics' %}" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">View detailed analytics →</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Price Change Chart
+        const priceChangeCtx = document.getElementById('priceChangeChart').getContext('2d');
+        const priceChangeChart = new Chart(priceChangeCtx, {
+            type: 'line',
+            data: {
+                labels: {{ price_change_chart.labels|safe }},
+                datasets: [{
+                    label: 'Average Price Change (%)',
+                    data: {{ price_change_chart.data|safe }},
+                    backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                    borderColor: 'rgba(79, 70, 229, 1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: 'rgba(79, 70, 229, 1)',
+                    pointRadius: 3,
+                    pointHoverRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                let value = context.parsed.y;
+                                return `${label}: ${value > 0 ? '+' : ''}${value.toFixed(2)}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Marketplace Distribution Chart
+        const marketplaceCtx = document.getElementById('marketplaceDistributionChart').getContext('2d');
+        const marketplaceChart = new Chart(marketplaceCtx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ marketplace_distribution.labels|safe }},
+                datasets: [{
+                    data: {{ marketplace_distribution.data|safe }},
+                    backgroundColor: [
+                        'rgba(79, 70, 229, 0.8)',
+                        'rgba(245, 158, 11, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(79, 70, 229, 1)',
+                        'rgba(245, 158, 11, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

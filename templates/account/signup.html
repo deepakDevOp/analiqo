@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load static %}
+
+{% block title %}{% trans "Sign Up" %} | Analiqo{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-wrapper {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f8f9fc 0%, #e8eaf6 100%);
+        padding: 80px 0;
+    }
+    
+    .auth-card {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        background: white;
+    }
+    
+    .auth-header {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+    
+    .auth-body {
+        padding: 40px;
+    }
+    
+    .auth-form .form-control {
+        height: 50px;
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: 1px solid #e0e0e0;
+        background-color: #f8f9fc;
+        margin-bottom: 20px;
+    }
+    
+    .auth-form .form-control:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+    }
+    
+    .auth-btn {
+        height: 50px;
+        border-radius: 10px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        font-size: 16px;
+        width: 100%;
+    }
+    
+    .auth-footer {
+        text-align: center;
+        margin-top: 30px;
+    }
+    
+    .brand-logo {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 15px;
+    }
+    
+    .social-login {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .social-btn {
+        border-radius: 10px;
+        padding: 12px 20px;
+        width: 100%;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+    }
+    
+    .social-btn i {
+        margin-right: 10px;
+        font-size: 18px;
+    }
+    
+    .google-btn {
+        background-color: #fff;
+        color: #555;
+        border: 1px solid #ddd;
+    }
+    
+    .facebook-btn {
+        background-color: #3b5998;
+        color: white;
+    }
+    
+    .auth-divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .auth-divider::before,
+    .auth-divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .auth-divider-text {
+        padding: 0 10px;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        {% comment %}
+                        <img src="{% static 'img/logo-white.png' %}" alt="Analiqo Logo" class="brand-logo">
+                        {% endcomment %}
+                        <h3 class="mb-1">Join Analiqo Today</h3>
+                        <p class="mb-0">Create your account and start optimizing your prices</p>
+                    </div>
+                    <div class="auth-body">
+                        {% if socialaccount_providers %}
+                        <div class="social-login">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a href="{% provider_login_url 'google' process='signup' %}" class="social-btn google-btn">
+                                        <i class="fab fa-google"></i> Sign up with Google
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{% provider_login_url 'facebook' process='signup' %}" class="social-btn facebook-btn">
+                                        <i class="fab fa-facebook-f"></i> Sign up with Facebook
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="auth-divider">
+                                <span class="auth-divider-text">or</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <form class="auth-form signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                            {% csrf_token %}
+                            
+                            {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <p class="mb-0">
+                                    {% if form.non_field_errors %}
+                                        {{ form.non_field_errors.0 }}
+                                    {% else %}
+                                        Please correct the errors below.
+                                    {% endif %}
+                                </p>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="mb-3">
+                                <label for="id_email" class="form-label">{% trans "Email" %}</label>
+                                <input type="email" name="email" placeholder="Email address" class="form-control{% if form.email.errors %} is-invalid{% endif %}" id="id_email" required>
+                                {% if form.email.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.email.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="id_username" class="form-label">{% trans "Username" %}</label>
+                                <input type="text" name="username" placeholder="Choose a username" class="form-control{% if form.username.errors %} is-invalid{% endif %}" id="id_username" required>
+                                {% if form.username.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.username.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="id_password1" class="form-label">{% trans "Password" %}</label>
+                                <input type="password" name="password1" placeholder="Create a password" class="form-control{% if form.password1.errors %} is-invalid{% endif %}" id="id_password1" required>
+                                {% if form.password1.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.password1.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="id_password2" class="form-label">{% trans "Confirm Password" %}</label>
+                                <input type="password" name="password2" placeholder="Confirm your password" class="form-control{% if form.password2.errors %} is-invalid{% endif %}" id="id_password2" required>
+                                {% if form.password2.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.password2.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                            {% endif %}
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                </label>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary auth-btn">{% trans "Sign Up" %}</button>
+                        </form>
+                        
+                        <div class="auth-footer">
+                            <p class="mb-0">Already have an account? <a href="{% url 'account_login' %}" class="text-decoration-none fw-bold">Sign In</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

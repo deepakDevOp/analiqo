@@ -1,0 +1,546 @@
+{% extends 'landing_page.html' %}
+{% load static %}
+
+{% block title %}Contact Us | Analiqo{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+    .contact-header {
+        position: relative;
+        padding: 100px 0 50px;
+        overflow: hidden;
+        border-radius: 0 0 30px 30px;
+        background: linear-gradient(-45deg, #4361ee, #3a0ca3, #7209b7, #560bad);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        margin-bottom: 80px;
+    }
+    
+    .contact-header .floating-elements {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+    }
+    
+    .contact-header .floating-element {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: float 8s infinite ease-in-out;
+    }
+    
+    .contact-card {
+        border-radius: 20px;
+        background: var(--card-bg);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .contact-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .contact-info-item {
+        display: flex;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+    }
+    
+    .contact-info-item:hover {
+        transform: translateX(10px);
+    }
+    
+    .contact-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        position: relative;
+        z-index: 1;
+    }
+    
+    .contact-icon-wrapper:before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        background: inherit;
+        filter: blur(8px);
+        opacity: 0.8;
+        z-index: -1;
+        transition: all 0.3s ease;
+        transform: scale(0.8);
+    }
+    
+    .contact-info-item:hover .contact-icon-wrapper:before {
+        transform: scale(1.5);
+        opacity: 0.4;
+    }
+    
+    .contact-icon {
+        font-size: 1.8rem;
+        color: white;
+    }
+    
+    .form-card {
+        border-radius: 20px;
+        background: var(--card-bg);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 40px;
+    }
+    
+    .floating-label-group {
+        position: relative;
+        margin-bottom: 25px;
+    }
+    
+    .floating-label {
+        position: absolute;
+        pointer-events: none;
+        left: 15px;
+        top: 18px;
+        transition: 0.2s ease all;
+        color: var(--text-muted);
+    }
+    
+    .form-control:focus ~ .floating-label,
+    .form-control:not(:placeholder-shown) ~ .floating-label {
+        top: -10px;
+        left: 10px;
+        font-size: 0.8rem;
+        opacity: 1;
+        background: var(--card-bg);
+        padding: 0 5px;
+        color: var(--accent-color);
+    }
+    
+    .form-control {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: var(--text-light);
+        padding: 15px;
+        height: auto;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 0.25rem rgba(76, 201, 240, 0.15);
+    }
+    
+    .submit-btn {
+        border-radius: 12px;
+        padding: 12px 30px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        border: none;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        transition: all 0.3s ease;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .submit-btn:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        z-index: -1;
+        transition: all 0.3s ease;
+    }
+    
+    .submit-btn:hover:before {
+        width: 100%;
+    }
+    
+    .map-container {
+        position: relative;
+        height: 350px;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .map-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+    
+    .faq-card {
+        border-radius: 16px;
+        background: var(--card-bg);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+    }
+    
+    .faq-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .accordion-button {
+        background-color: var(--card-bg);
+        color: var(--text-light);
+        border: none;
+        padding: 20px 25px;
+        font-weight: 600;
+        border-radius: 16px !important;
+    }
+    
+    .accordion-button:not(.collapsed) {
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        color: white;
+    }
+    
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .accordion-button::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    }
+    
+    .accordion-body {
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.02);
+    }
+    
+    .social-float {
+        display: flex;
+        position: fixed;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        flex-direction: column;
+        z-index: 999;
+    }
+    
+    .social-float-item {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        color: white;
+        margin: 5px 0;
+        text-decoration: none;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .social-float-item:hover {
+        transform: translateX(-5px);
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Social Float Buttons -->
+<div class="social-float d-none d-lg-flex">
+    <a href="#" class="social-float-item">
+        <i class="fab fa-facebook-f"></i>
+    </a>
+    <a href="#" class="social-float-item">
+        <i class="fab fa-twitter"></i>
+    </a>
+    <a href="#" class="social-float-item">
+        <i class="fab fa-linkedin-in"></i>
+    </a>
+    <a href="#" class="social-float-item">
+        <i class="fab fa-instagram"></i>
+    </a>
+</div>
+
+<!-- Contact Header Section -->
+<section class="contact-header">
+    <!-- Floating Elements -->
+    <div class="floating-elements">
+        <div class="floating-element" style="width: 100px; height: 100px; top: 20%; left: 10%;"></div>
+        <div class="floating-element" style="width: 150px; height: 150px; top: 50%; right: 15%; animation-delay: 2s;"></div>
+        <div class="floating-element" style="width: 70px; height: 70px; bottom: 30%; left: 30%; animation-delay: 1s;"></div>
+    </div>
+    
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center" data-aos="fade-up">
+                <h1 class="display-4 fw-bold mb-4">Contact Us</h1>
+                <p class="lead mb-0">We'd love to hear from you. Get in touch with our team for any questions or support.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="row g-5">
+        <!-- Contact Information -->
+        <div class="col-lg-5" data-aos="fade-right">
+            <h3 class="fw-bold mb-4">Get In Touch</h3>
+            <p class="mb-5">Have questions about our product, pricing, or need technical support? Our team is ready to help you.</p>
+            
+            <div class="contact-info-item">
+                <div class="contact-icon-wrapper">
+                    <i class="fas fa-map-marker-alt contact-icon"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold">Our Location</h5>
+                    <p class="text-muted mb-0">123 Pricing Street, San Francisco, CA 94103, USA</p>
+                </div>
+            </div>
+            
+            <div class="contact-info-item">
+                <div class="contact-icon-wrapper">
+                    <i class="fas fa-envelope contact-icon"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold">Email Us</h5>
+                    <p class="text-muted mb-0">support@analiqo.com</p>
+                    <p class="text-muted mb-0">sales@analiqo.com</p>
+                </div>
+            </div>
+            
+            <div class="contact-info-item">
+                <div class="contact-icon-wrapper">
+                    <i class="fas fa-phone-alt contact-icon"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold">Call Us</h5>
+                    <p class="text-muted mb-0">+1 (555) 123-4567</p>
+                    <p class="text-muted mb-0">Monday-Friday, 9am-6pm PST</p>
+                </div>
+            </div>
+            
+            <div class="contact-info-item">
+                <div class="contact-icon-wrapper">
+                    <i class="fas fa-comments contact-icon"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold">Live Chat</h5>
+                    <p class="text-muted mb-0">Available 24/7 on our platform for Pro and Enterprise customers</p>
+                </div>
+            </div>
+            
+            <!-- Map -->
+            <div class="mt-5 map-container" data-aos="fade-up">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.7457082236533!2d-122.41941548468214!3d37.77597997975882!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c6c8f4459%3A0xb10ed6d9b5050fa5!2sSan%20Francisco%2C%20CA!5e0!3m2!1sen!2sus!4v1649523512662!5m2!1sen!2sus" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+        
+        <!-- Contact Form -->
+        <div class="col-lg-7" data-aos="fade-left">
+            <div class="form-card">
+                <h3 class="fw-bold mb-4">Send Us a Message</h3>
+                
+                <form>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="floating-label-group">
+                                <input type="text" class="form-control" id="name" placeholder=" " required>
+                                <label for="name" class="floating-label">Your Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="floating-label-group">
+                                <input type="email" class="form-control" id="email" placeholder=" " required>
+                                <label for="email" class="floating-label">Your Email</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="floating-label-group">
+                                <input type="text" class="form-control" id="subject" placeholder=" ">
+                                <label for="subject" class="floating-label">Subject</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="floating-label-group">
+                                <textarea class="form-control" id="message" rows="5" placeholder=" " required></textarea>
+                                <label for="message" class="floating-label">Message</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="privacy-policy" required>
+                                <label class="form-check-label text-muted" for="privacy-policy">
+                                    I agree to the <a href="{% url 'core:privacy_policy' %}" class="text-decoration-none">Privacy Policy</a> and consent to be contacted regarding my inquiry.
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn submit-btn btn-primary px-5 py-3">
+                                <span>Send Message</span>
+                                <i class="fas fa-paper-plane ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<section class="py-5 my-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center" data-aos="fade-up">
+                <h2 class="fw-bold">Frequently Asked Questions</h2>
+                <p class="lead text-muted">Find quick answers to common questions about Analiqo</p>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="accordion" id="contactFAQ">
+                    <div class="faq-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    How quickly can I get started with Analiqo?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#contactFAQ">
+                                <div class="accordion-body">
+                                    <p class="mb-0">You can sign up and start using Analiqo in just a few minutes. Our intuitive onboarding process helps you connect your marketplace accounts, import your products, and set up your first repricing rules quickly and easily.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    What marketplaces does Analiqo support?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#contactFAQ">
+                                <div class="accordion-body">
+                                    <p class="mb-0">Analiqo currently supports Amazon, eBay, Walmart, and Shopify. We're continuously adding new marketplace integrations based on customer demand.</p>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    <div class="faq-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Is there a free trial available?
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#contactFAQ">
+                                <div class="accordion-body">
+                                    <p class="mb-0">Yes, we offer a 14-day free trial with full access to all features. No credit card is required to start your trial. You can upgrade to a paid plan at any time during or after your trial period.</p>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    <div class="faq-card" data-aos="fade-up" data-aos-delay="400">
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    How secure is my data with Analiqo?
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#contactFAQ">
+                                <div class="accordion-body">
+                                    <p class="mb-0">Your data security is our top priority. Analiqo employs industry-standard encryption, secure data centers, and regular security audits to ensure your information is always protected. We're fully GDPR-compliant and never share your data with third parties.</p>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    <div class="faq-card" data-aos="fade-up" data-aos-delay="500">
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header" id="headingFive">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                    Can I integrate Analiqo with my existing tools?
+                                </button>
+                            </h2>
+                            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#contactFAQ">
+                                <div class="accordion-body">
+                                    <p class="mb-0">Yes, Analiqo offers robust API integration capabilities that allow you to connect with your existing inventory management systems, accounting software, and other e-commerce tools. Our developer documentation provides detailed information on available endpoints and authentication.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 mt-5">
+    <div class="container">
+        <div class="cta-section text-center" data-aos="fade-up">
+            <div class="floating-elements">
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+            </div>
+            <h2 class="fw-bold mb-4">Can't find what you're looking for?</h2>
+            <p class="lead mb-4">Our support team is here to help you with any questions or concerns</p>
+            <div class="d-flex justify-content-center">
+                <a href="mailto:support@analiqo.com" class="btn btn-light btn-lg me-3 btn-signup">
+                    <i class="fas fa-envelope me-2"></i> Email Support
+                </a>
+                <a href="tel:+15551234567" class="btn btn-outline-light btn-lg btn-signup">
+                    <i class="fas fa-phone-alt me-2"></i> Call Us
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    // Floating label effect
+    const formInputs = document.querySelectorAll('.form-control');
+    formInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Auto Repricer | Analiqo{% endblock %}
+
+{% block content %}
+<div class="py-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-indigo-700">Auto Repricer</h1>
+        <div class="flex space-x-4">
+            <a href="{% url 'auto_repricer:product_add' %}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Add Product
+            </a>
+            <a href="{% url 'auto_repricer:rule_add' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Create Rule
+            </a>
+            <a href="{% url 'auto_repricer:start_repricing' %}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Start Repricing
+            </a>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Products -->
+        <div class="bg-white rounded-lg shadow p-6 border border-indigo-100 hover:border-indigo-300 transition">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500">Total Products</h3>
+                    <div class="mt-1 flex items-baseline">
+                        <p class="text-2xl font-semibold text-indigo-600">{{ total_products }}</p>
+                        <p class="ml-2 text-sm text-gray-600">({{ active_products }} active)</p>
+                    </div>
+                </div>
+                <div class="p-2 bg-indigo-50 rounded-md">
+                    <svg class="h-6 w-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                </div>
+            </div>
+            <a href="{% url 'auto_repricer:product_list' %}" class="mt-4 block text-sm text-indigo-600 hover:text-indigo-800">View all products →</a>
+        </div>
+        
+        <!-- Repricing Rules -->
+        <div class="bg-white rounded-lg shadow p-6 border border-indigo-100 hover:border-indigo-300 transition">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500">Repricing Rules</h3>
+                    <div class="mt-1 flex items-baseline">
+                        <p class="text-2xl font-semibold text-indigo-600">{{ total_rules }}</p>
+                        <p class="ml-2 text-sm text-gray-600">({{ active_rules }} active)</p>
+                    </div>
+                </div>
+                <div class="p-2 bg-indigo-50 rounded-md">
+                    <svg class="h-6 w-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    </svg>
+                </div>
+            </div>
+            <a href="{% url 'auto_repricer:rule_list' %}" class="mt-4 block text-sm text-indigo-600 hover:text-indigo-800">View all rules →</a>
+        </div>
+        
+        <!-- Buy Box Status -->
+        <div class="bg-white rounded-lg shadow p-6 border border-indigo-100 hover:border-indigo-300 transition">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500">Buy Box Status</h3>
+                    <div class="mt-1 flex items-baseline">
+                        <p class="text-2xl font-semibold text-indigo-600">{{ buy_box_winners }}</p>
+                        <p class="ml-2 text-sm text-gray-600">({{ buy_box_win_rate }}% win rate)</p>
+                    </div>
+                </div>
+                <div class="p-2 bg-green-50 rounded-md">
+                    <svg class="h-6 w-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                </div>
+            </div>
+            <a href="{% url 'auto_repricer:history' %}" class="mt-4 block text-sm text-indigo-600 hover:text-indigo-800">View repricing history →</a>
+        </div>
+        
+        <!-- Recent Price Changes -->
+        <div class="bg-white rounded-lg shadow p-6 border border-indigo-100 hover:border-indigo-300 transition">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500">Recent Repricings</h3>
+                    <div class="mt-1">
+                        <p class="text-2xl font-semibold text-indigo-600">{{ recent_repricings|length }}</p>
+                    </div>
+                </div>
+                <div class="p-2 bg-yellow-50 rounded-md">
+                    <svg class="h-6 w-6 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+            <a href="{% url 'auto_repricer:history' %}" class="mt-4 block text-sm text-indigo-600 hover:text-indigo-800">View details →</a>
+        </div>
+    </div>
+    
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- Repricing Activity Chart -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Repricing Activity (Last 30 Days)</h3>
+            <div class="h-64">
+                <canvas id="repricingActivityChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Rule Types Distribution Chart -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Repricing Rule Types</h3>
+            <div class="h-64">
+                <canvas id="ruleTypesChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Repricing Section -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Recent Repricing Events</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Old Price</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">New Price</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rule</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% if recent_repricings %}
+                        {% for repricing in recent_repricings %}
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-indigo-600">{{ repricing.product.name }}</div>
+                                    <div class="text-sm text-gray-500">{{ repricing.product.sku }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">${{ repricing.old_price }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm {% if repricing.new_price > repricing.old_price %}text-red-600{% elif repricing.new_price < repricing.old_price %}text-green-600{% else %}text-gray-900{% endif %}">
+                                        ${{ repricing.new_price }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ repricing.rule_name }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-500">{{ repricing.timestamp|date:"M d, Y H:i" }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <a href="{% url 'auto_repricer:product_detail' repricing.product.id %}" class="text-indigo-600 hover:text-indigo-900">View Product</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
+                                No recent repricing actions found.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <div class="bg-gray-50 px-6 py-3 border-t border-gray-200 text-right">
+            <a href="{% url 'auto_repricer:history' %}" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">View full history →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Repricing Activity Chart
+        const repricingActivityCtx = document.getElementById('repricingActivityChart').getContext('2d');
+        const repricingActivityChart = new Chart(repricingActivityCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ repricing_activity_chart.labels|safe }},
+                datasets: [{
+                    label: 'Price Adjustments',
+                    data: {{ repricing_activity_chart.data|safe }},
+                    backgroundColor: 'rgba(79, 70, 229, 0.7)',
+                    borderColor: 'rgba(79, 70, 229, 1)',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barThickness: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        
+        // Rule Types Chart
+        const ruleTypesCtx = document.getElementById('ruleTypesChart').getContext('2d');
+        const ruleTypesChart = new Chart(ruleTypesCtx, {
+            type: 'pie',
+            data: {
+                labels: {{ rule_types_chart.labels|safe }},
+                datasets: [{
+                    data: {{ rule_types_chart.data|safe }},
+                    backgroundColor: [
+                        'rgba(79, 70, 229, 0.8)',
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(245, 158, 11, 0.8)',
+                        'rgba(239, 68, 68, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(79, 70, 229, 1)',
+                        'rgba(16, 185, 129, 1)',
+                        'rgba(245, 158, 11, 1)',
+                        'rgba(239, 68, 68, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

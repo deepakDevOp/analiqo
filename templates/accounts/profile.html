@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Profile | Analiqo{% endblock %}
+
+{% block content %}
+<div class="py-6">
+    <div class="max-w-3xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-indigo-700">Your Profile</h1>
+            <a href="{% url 'accounts:profile_edit' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+                Edit Profile
+            </a>
+        </div>
+        
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+                <h3 class="text-lg font-medium leading-6 text-gray-900">Account Information</h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">Personal details and account settings.</p>
+            </div>
+            <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                    <div class="sm:col-span-1">
+                        <dt class="text-sm font-medium text-gray-500">Full name</dt>
+                        <dd class="mt-1 text-sm text-gray-900">{{ user_profile.first_name }} {{ user_profile.last_name }}</dd>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <dt class="text-sm font-medium text-gray-500">Email address</dt>
+                        <dd class="mt-1 text-sm text-gray-900">{{ user_profile.email }}</dd>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <dt class="text-sm font-medium text-gray-500">Company name</dt>
+                        <dd class="mt-1 text-sm text-gray-900">{{ user_profile.profile.company_name|default:"Not provided" }}</dd>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <dt class="text-sm font-medium text-gray-500">Phone number</dt>
+                        <dd class="mt-1 text-sm text-gray-900">{{ user_profile.profile.phone_number|default:"Not provided" }}</dd>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <dt class="text-sm font-medium text-gray-500">Account created</dt>
+                        <dd class="mt-1 text-sm text-gray-900">{{ user_profile.date_joined|date:"F j, Y" }}</dd>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <dt class="text-sm font-medium text-gray-500">Last login</dt>
+                        <dd class="mt-1 text-sm text-gray-900">{{ user_profile.last_login|date:"F j, Y H:i" }}</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+        
+        <!-- Subscription Information Card -->
+        <div class="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center">
+                <div>
+                    <h3 class="text-lg font-medium leading-6 text-gray-900">Subscription Information</h3>
+                    <p class="mt-1 max-w-2xl text-sm text-gray-500">Details about your current subscription plan.</p>
+                </div>
+                <a href="{% url 'accounts:subscription' %}" class="inline-flex items-center px-3 py-1.5 border border-indigo-300 text-xs font-medium rounded-full text-indigo-700 bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Change Plan
+                </a>
+            </div>
+            <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                    <div class="sm:col-span-1">
+                        <dt class="text-sm font-medium text-gray-500">Current plan</dt>
+                        <dd class="mt-1">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                                {{ user_profile.profile.subscription_plan|title }}
+                            </span>
+                        </dd>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <dt class="text-sm font-medium text-gray-500">Status</dt>
+                        <dd class="mt-1 text-sm text-gray-900">
+                            {% if user_profile.profile.subscription_active %}
+                                <span class="text-green-600 font-medium">Active</span>
+                            {% else %}
+                                <span class="text-red-600 font-medium">Inactive</span>
+                            {% endif %}
+                        </dd>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <dt class="text-sm font-medium text-gray-500">Features included</dt>
+                        <dd class="mt-1 text-sm text-gray-900">
+                            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 list-disc list-inside">
+                                {% if user_profile.profile.subscription_plan == 'basic' %}
+                                    <li>Monitor up to 50 competitor URLs</li>
+                                    <li>Daily price tracking</li>
+                                    <li>Basic price alerts</li>
+                                    <li>Manual repricing suggestions</li>
+                                {% elif user_profile.profile.subscription_plan == 'pro' %}
+                                    <li>Monitor up to 500 competitor URLs</li>
+                                    <li>Hourly price tracking</li>
+                                    <li>Advanced price alerts</li>
+                                    <li>Automated repricing</li>
+                                    <li>Buy Box optimization</li>
+                                    <li>Priority support</li>
+                                {% elif user_profile.profile.subscription_plan == 'enterprise' %}
+                                    <li>Unlimited competitor URLs</li>
+                                    <li>Real-time price tracking</li>
+                                    <li>Comprehensive price alerts</li>
+                                    <li>Advanced automated repricing</li>
+                                    <li>Custom Buy Box optimization strategies</li>
+                                    <li>Dedicated account manager</li>
+                                    <li>API access</li>
+                                {% endif %}
+                            </ul>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+        
+        <!-- Account Actions -->
+        <div class="mt-10 flex flex-col space-y-4">
+            <h3 class="text-lg font-medium text-gray-900">Account Actions</h3>
+            <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+                <a href="{% url 'account_email' %}" class="inline-flex justify-center items-center px-4 py-2 border border-indigo-300 shadow-sm text-sm font-medium rounded-md text-indigo-700 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="-ml-1 mr-2 h-5 w-5 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Manage Email Addresses
+                </a>
+                <a href="{% url 'account_change_password' %}" class="inline-flex justify-center items-center px-4 py-2 border border-indigo-300 shadow-sm text-sm font-medium rounded-md text-indigo-700 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="-ml-1 mr-2 h-5 w-5 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                    </svg>
+                    Change Password
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

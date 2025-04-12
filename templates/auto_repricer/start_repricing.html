@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Start Repricing | Analiqo{% endblock %}
+
+{% block content %}
+<div class="py-6">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-indigo-700 mb-4">Start Repricing</h1>
+        <p class="text-gray-600">Use this page to start a repricing session for your products.</p>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Repricing Summary</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h3 class="text-sm font-medium text-gray-500">Active Products</h3>
+                <p class="text-2xl font-semibold text-indigo-600 mt-1">{{ active_products }}</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h3 class="text-sm font-medium text-gray-500">Active Rules</h3>
+                <p class="text-2xl font-semibold text-indigo-600 mt-1">{{ active_rules }}</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h3 class="text-sm font-medium text-gray-500">Last Repricing</h3>
+                <p class="text-2xl font-semibold text-indigo-600 mt-1">{{ last_repricing|default:"Never" }}</p>
+            </div>
+        </div>
+        
+        <form method="post" action="{% url 'auto_repricer:start_repricing' %}">
+            {% csrf_token %}
+            
+            <div class="mb-6">
+                <label for="scope" class="block text-sm font-medium text-gray-700 mb-2">Repricing Scope</label>
+                <select id="scope" name="scope" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="all">All Products</option>
+                    <option value="amazon">Amazon Products</option>
+                    <option value="ebay">eBay Products</option>
+                    <option value="walmart">Walmart Products</option>
+                </select>
+            </div>
+            
+            <div class="flex items-center mb-6">
+                <input id="force_reprice" name="force_reprice" type="checkbox" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                <label for="force_reprice" class="ml-2 block text-sm text-gray-700">Force reprice (update all products even if no competitors changed)</label>
+            </div>
+            
+            <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Start Repricing
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
